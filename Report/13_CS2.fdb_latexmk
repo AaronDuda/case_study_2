@@ -1,5 +1,8 @@
 # Fdb version 4
-["pdflatex"] 1778084888.23871 "c:/Users/aaron/Programs/python-workplace/ML homework/C2/case_study_2/Report/main.tex" "main.pdf" "main" 1778084888.93721 0
+["pdflatex"] 1778085184.78027 "c:/Users/aaron/Programs/python-workplace/ML homework/C2/case_study_2/Report/13_CS2.tex" "13_CS2.pdf" "13_CS2" 1778085185.45388 0
+  "13_CS2.aux" 1778085185 162 87159b23cce7c2b923b11c85495bbd6d "pdflatex"
+  "13_CS2.out" 1778085185 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "13_CS2.tex" 1778084886 4752 3ee8b9ed44d6c3305574a5fcc793c185 ""
   "C:/Users/aaron/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1775794212 187664 65fa417f6850b604c49bfafe76826e39 ""
   "C:/Users/aaron/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ectt1200.pk" 1775254459 24152 174712a61ea28597f8c4cf64d06d49b1 ""
   "C:/Users/aaron/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1757367871 13257342 2ef7e8f832f1ecbe47d21e47be9cb252 ""
@@ -91,14 +94,11 @@
   "C:/Users/aaron/AppData/Local/Programs/MiKTeX/tex/latex/tools/enumerate.sty" 1749468414 3468 f21ceb3448a22fec45299f924e7fc48b ""
   "C:/Users/aaron/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/aaron/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "c:/Users/aaron/Programs/python-workplace/ML homework/C2/case_study_2/Report/main.tex" 1778084886 4752 3ee8b9ed44d6c3305574a5fcc793c185 ""
+  "c:/Users/aaron/Programs/python-workplace/ML homework/C2/case_study_2/Report/13_CS2.tex" 1778084886 4752 3ee8b9ed44d6c3305574a5fcc793c185 ""
   "fphw.cls" 1775221182 4376 779aa0eba73aecde9d924fbecab27e67 ""
-  "main.aux" 1778084888 162 87159b23cce7c2b923b11c85495bbd6d "pdflatex"
-  "main.out" 1778084888 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "main.tex" 1778084886 4752 3ee8b9ed44d6c3305574a5fcc793c185 ""
   (generated)
-  "main.aux"
-  "main.log"
-  "main.out"
-  "main.pdf"
+  "13_CS2.aux"
+  "13_CS2.log"
+  "13_CS2.out"
+  "13_CS2.pdf"
   (rewritten before read)

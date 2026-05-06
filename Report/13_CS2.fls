@@ -1,7 +1,7 @@
 PWD c:\Users\aaron\Programs\python-workplace\ML homework\C2\case_study_2\Report
 INPUT C:\Users\aaron\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\aaron\Programs\python-workplace\ML homework\C2\case_study_2\Report\main.tex
-OUTPUT main.log
+INPUT c:\Users\aaron\Programs\python-workplace\ML homework\C2\case_study_2\Report\13_CS2.tex
+OUTPUT 13_CS2.log
 INPUT .\fphw.cls
 INPUT fphw.cls
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\latex\fancyhdr\fancyhdr.sty
@@ -125,10 +125,10 @@ INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\latex\psnfss\t1ppl.fd
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\palatino\pplr8t.tfm
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\latex\l3backend\l3backend-pdftex.def
-INPUT .\main.aux
-INPUT .\main.aux
-INPUT main.aux
-OUTPUT main.aux
+INPUT .\13_CS2.aux
+INPUT .\13_CS2.aux
+INPUT 13_CS2.aux
+OUTPUT 13_CS2.aux
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\context\base\mkii\supp-pdf.mkii
@@ -137,14 +137,14 @@ INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\latex\epstopdf-pkg\epstop
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
-INPUT .\main.out
-INPUT .\main.out
-INPUT main.out
-INPUT main.out
-INPUT .\main.out
-INPUT .\main.out
-OUTPUT main.out
-OUTPUT main.pdf
+INPUT .\13_CS2.out
+INPUT .\13_CS2.out
+INPUT 13_CS2.out
+INPUT 13_CS2.out
+INPUT .\13_CS2.out
+INPUT .\13_CS2.out
+OUTPUT 13_CS2.out
+OUTPUT 13_CS2.pdf
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\palatino\pplrc8t.tfm
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\palatino\pplr8t.tfm
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\palatino\pplb8t.tfm
@@ -203,9 +203,9 @@ INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\palatino\pplr8
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\palatino\pplr8r.tfm
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\fonts\vf\adobe\palatino\pplbi8t.vf
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\fonts\tfm\adobe\palatino\pplbi8r.tfm
-INPUT main.aux
-INPUT .\main.out
-INPUT .\main.out
+INPUT 13_CS2.aux
+INPUT .\13_CS2.out
+INPUT .\13_CS2.out
 INPUT C:\Users\aaron\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt1200.pk
 INPUT C:\Users\aaron\AppData\Local\MiKTeX\fonts\pk\ljfour\jknappen\ec\dpi600\ectt1200.pk
 INPUT C:\Users\aaron\AppData\Local\Programs\MiKTeX\fonts\type1\urw\palatino\uplb8a.pfb
