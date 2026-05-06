@@ -1,9 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn import preprocessing
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, HDBSCAN
 import functools
-from sklearn.metrics import silhouette_samples, silhouette_score
 from sklearn.metrics.cluster import adjusted_rand_score
 
 def hh_mm_ss2seconds(hh_mm_ss):
@@ -19,6 +18,23 @@ def load_and_preprocess(csv_path):
 
     # Standardization 
     return preprocessing.StandardScaler().fit(X).transform(X)
+
+def load_and_preprocess_predictor(csv_path):
+    df = pd.read_csv(csv_path, converters={'SEQUENCE_DTTM' : hh_mm_ss2seconds})
+    course_radians = np.deg2rad(df['COURSE_OVER_GROUND'].to_numpy(dtype=float) / 10.0)
+    X = np.column_stack((
+        df['SEQUENCE_DTTM'].to_numpy(dtype=float),
+        df['LAT'].to_numpy(dtype=float),
+        df['LON'].to_numpy(dtype=float),
+        df['SPEED_OVER_GROUND'].to_numpy(dtype=float),
+        np.sin(course_radians),
+        np.cos(course_radians),
+    ))
+    return preprocessing.StandardScaler().fit(X).transform(X)
+
+def renumber_labels(labels):
+    label_map = {old_label: new_label for new_label, old_label in enumerate(np.unique(labels))}
+    return np.array([label_map[label] for label in labels], dtype=int)
 
 def load_vid_labels(csv_path):
     # load data
@@ -61,27 +77,28 @@ def evaluate():
 
 
 def predictor(csv_path):
-    X = load_and_preprocess(csv_path)
-    range_n_clusters = np.arange(1,100)
-    for n_clusters in range_n_clusters:
-        clusterer = KMeans(n_clusters=n_clusters, init='k-means++', n_init=10, random_state=123)
-        cluster_labels = clusterer.fit_predict(X)
-        silhouette_avg = silhouette_score(X, cluster_labels)
-        print(
-            "For n_clusters =",
-            n_clusters,
-            "The average silhouette_score is :",
-            silhouette_avg,
-        )
+    X = load_and_preprocess_predictor(csv_path)
+    if X.shape[0] < 5:
+        return np.zeros(X.shape[0], dtype=int)
 
-        # Compute the silhouette scores for each sample
-        sample_silhouette_values = silhouette_samples(X, cluster_labels)
-    # fill your code here
-    return labels_pred
+    min_cluster_size = min(150, max(5, X.shape[0] // 3))
+    model = HDBSCAN(
+        min_cluster_size=min_cluster_size,
+        min_samples=5,
+        metric='euclidean',
+        cluster_selection_method='eom',
+        copy=True,
+    )
+    labels_pred = model.fit_predict(X)
+    non_noise_labels = labels_pred[labels_pred >= 0]
+
+    if len(np.unique(non_noise_labels)) < 2:
+        n_clusters = min(X.shape[0], max(2, int(round(X.shape[0] / 600))))
+        labels_pred = KMeans(n_clusters=n_clusters, random_state=123, n_init=10).fit_predict(X)
+
+    return renumber_labels(labels_pred)
 
 
 if __name__=="__main__":
     get_baseline_score()
     evaluate()
-
-
