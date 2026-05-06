@@ -3,6 +3,7 @@ import numpy as np
 from sklearn import preprocessing
 from sklearn.cluster import KMeans
 import functools
+from sklearn.metrics import silhouette_samples, silhouette_score
 from sklearn.metrics.cluster import adjusted_rand_score
 
 def hh_mm_ss2seconds(hh_mm_ss):
@@ -18,6 +19,15 @@ def load_and_preprocess(csv_path):
 
     # Standardization 
     return preprocessing.StandardScaler().fit(X).transform(X)
+
+def load_vid_labels(csv_path):
+    # load data
+    df = pd.read_csv(csv_path)
+
+    # select VID's
+    return df['VID'].to_numpy()
+
+
 
 
 def predictor_baseline(csv_path): 
@@ -51,6 +61,21 @@ def evaluate():
 
 
 def predictor(csv_path):
+    X = load_and_preprocess(csv_path)
+    range_n_clusters = np.arange(1,100)
+    for n_clusters in range_n_clusters:
+        clusterer = KMeans(n_clusters=n_clusters, init='k-means++', n_init=10, random_state=123)
+        cluster_labels = clusterer.fit_predict(X)
+        silhouette_avg = silhouette_score(X, cluster_labels)
+        print(
+            "For n_clusters =",
+            n_clusters,
+            "The average silhouette_score is :",
+            silhouette_avg,
+        )
+
+        # Compute the silhouette scores for each sample
+        sample_silhouette_values = silhouette_samples(X, cluster_labels)
     # fill your code here
     return labels_pred
 
