@@ -21,16 +21,13 @@ def load_and_preprocess(csv_path):
 
 def load_and_preprocess_predictor(csv_path):
     df = pd.read_csv(csv_path, converters={'SEQUENCE_DTTM' : hh_mm_ss2seconds})
-    course_radians = np.deg2rad(df['COURSE_OVER_GROUND'].to_numpy(dtype=float) / 10.0)
     X = np.column_stack((
         df['SEQUENCE_DTTM'].to_numpy(dtype=float),
         df['LAT'].to_numpy(dtype=float),
         df['LON'].to_numpy(dtype=float),
-        df['SPEED_OVER_GROUND'].to_numpy(dtype=float),
-        np.sin(course_radians),
-        np.cos(course_radians),
     ))
-    return preprocessing.StandardScaler().fit(X).transform(X)
+    X = preprocessing.StandardScaler().fit(X).transform(X)
+    return X * np.array([0.5, 3.0, 3.0])
 
 def renumber_labels(labels):
     label_map = {old_label: new_label for new_label, old_label in enumerate(np.unique(labels))}
@@ -81,10 +78,9 @@ def predictor(csv_path):
     if X.shape[0] < 5:
         return np.zeros(X.shape[0], dtype=int)
 
-    min_cluster_size = min(150, max(5, X.shape[0] // 3))
     model = HDBSCAN(
-        min_cluster_size=min_cluster_size,
-        min_samples=5,
+        min_cluster_size=150,
+        min_samples=3,
         metric='euclidean',
         cluster_selection_method='eom',
         copy=True,
