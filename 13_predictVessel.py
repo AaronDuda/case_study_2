@@ -8,18 +8,25 @@ from sklearn.metrics.cluster import adjusted_rand_score
 def hh_mm_ss2seconds(hh_mm_ss):
     return functools.reduce(lambda acc, x: acc*60 + x, map(int, hh_mm_ss.split(':')))
 
-
-def predictor_baseline(csv_path):
+def load_and_preprocess(csv_path):
     # load data and convert hh:mm:ss to seconds
     df = pd.read_csv(csv_path, converters={'SEQUENCE_DTTM' : hh_mm_ss2seconds})
+
     # select features 
     selected_features = ['SEQUENCE_DTTM', 'LAT', 'LON', 'SPEED_OVER_GROUND' ,'COURSE_OVER_GROUND']
     X = df[selected_features].to_numpy()
+
     # Standardization 
-    X = preprocessing.StandardScaler().fit(X).transform(X)
+    return preprocessing.StandardScaler().fit(X).transform(X)
+
+
+def predictor_baseline(csv_path): 
+    X = load_and_preprocess(csv_path)
+
     # k-means with K = number of unique VIDs of set1
     K = 20 
     model = KMeans(n_clusters=K, random_state=123, n_init='auto').fit(X)
+
     # predict cluster numbers of each sample
     labels_pred = model.predict(X)
     return labels_pred

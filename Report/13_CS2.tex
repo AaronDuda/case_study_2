@@ -43,7 +43,7 @@ Additionally we do not use DBSCAN, HDBSCAN, OPTICS, BIRCH, or gaussian mixtures 
 these algorithms provide additional capabilities which are not necessary for grouping maritime vessel signals. This left us with K-means, affinity propagation, and mean shift. For the 
 sake of simplicity and the fact that the latter two are not scalable with respect to the number of samples, we decided to use the K-means algorithm.
 
-To find the optimal number of samples, we set the following parameters, varied as specified.
+To find the correct number of clusters and the correct cluster assignments, we set the following parameters, varied as specified.
 
 \begin{enumerate}
     \item $\texttt{n\_clusters}$ (Varied)
@@ -90,7 +90,7 @@ use the groudtruth cluster assignments dictated by VID to determine the accuracy
 \subsubsection*{OBJECT\_ID} We also drop the OBJECT\_ID column, since it provides no relevant information
 to help with clustering vessel reports.
 
-\subsubsection*{SEQUENCE\_DTTM} For this feature, we break it down into 3 new features: \texttt{HOURS}, \texttt{MINUTES}, and \texttt{SECONDS}. This is a form understandable to our model as
+\subsubsection*{SEQUENCE\_DTTM} For this feature, we simply convert it into seconds. This is a form understandable to our model as
 opposed to the UTC format.
 
 \subsubsection*{Standardization} To ensure feature scale did not affect the outcome of the k-means clustering, we use the \texttt{StandardScaler} from scikit-learn to transform the data such that
