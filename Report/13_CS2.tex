@@ -134,7 +134,22 @@ Perhaps the most surprising insight from this study was the fact that more data 
 This fact is likely due to the noisy nature of vessel speed, making the separability of the clusters more difficult when the data is included. 
 
 We also found it interesting that K-means was mostly ineffective at 
-solving this clustering problem. Our initial thought was that if we could obtain the correct value for K using the elbow method and silhouette values, we could simply tune the other hyperparameters to build a successful model. But nothing we did could improve the model above the baseline. Pursuing this solution was an oversight on our part since the baseline
+solving this clustering problem. In our first attempt, we thought that if we could obtain the correct value for K using the elbow method and silhouette values, we could simply tune the other hyperparameters to build a successful model. Below is the code for determining the K value using the elbow and the silhouette values.
+
+\begin{lstlisting}
+# elbow method on inertia
+knee = KneeLocator(list(map(int, ks)), inertias, curve='convex', direction='decreasing')
+elbow_k = knee.knee if knee.knee is not None else ks[np.argmax(sil_scores)]
+
+# pick K closest to elbow that also maximizes silhouette within a window around the elbow
+window = 2
+elbow_idx = np.where(ks == elbow_k)[0][0]
+lo = max(0, elbow_idx - window)
+hi = min(len(ks), elbow_idx + window + 1)
+best_index = lo + np.argmax(sil_scores[lo:hi])
+\end{lstlisting}
+
+But nothing we did could improve the model above the baseline. Pursuing this solution was an oversight on our part since the baseline
 shows that even if you know the exact value for K, K-means still cannot cluster the data correctly.
 
 
