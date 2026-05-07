@@ -118,8 +118,12 @@ The final tuned HDBSCAN model substantially improves over the baseline on both l
 
 \section*{Insights and Failed Attempts}
 
-Perhaps the most surprising insight from this study was the fact that more data does not necessarily make your model better. In the case of the maritime vessels data, it was more beneficial to remove columns concerned with the vessel's speed and only retain information about time and position. We also found it interesting that K-means was mostly ineffective at 
-solving this problem. Our initial thought was that if we could obtain the correct value for K using the elbow method and silhouette values, we could simply tune the other hyperparameters to build a successful model. But nothing we did could 
+Perhaps the most surprising insight from this study was the fact that more data does not necessarily make your model better. In the case of the maritime vessels data, it was more beneficial to remove columns concerned with the vessel's speed and only retain information about time and position. 
+This fact is likely due to the noisy nature of vessel speed, making the separability of the clusters more difficult when the data is included. 
+
+We also found it interesting that K-means was mostly ineffective at 
+solving this clustering problem. Our initial thought was that if we could obtain the correct value for K using the elbow method and silhouette values, we could simply tune the other hyperparameters to build a successful model. But nothing we did could improve the model above the baseline. Pursuing this solution was an oversight on our part since the baseline
+shows that even if you know the exact value for K, K-means still cannot cluster the data correctly.
 
 
 
