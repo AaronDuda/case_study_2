@@ -38,7 +38,7 @@
 \section*{Chosen Clustering Function and Parameters}
 
 To select the best model suitable for determining the proper clustering of maritime vessel signals, we first considered using some of the algorithms in the scikit-learn module on
-clustering found at \url{https://scikit-learn.org/stable/modules/clustering.html}. The goal of this case study is to identify which AIS position reports likely came from the same maritime vessel, even when the vessel IDs are removed. This makes the unknown number of vessels in \texttt{set3noVID.csv} one of the main problems we need to solve.
+clustering found at \url{https://scikit-learn.org/stable/modules/clustering.html}.
 
 We began by comparing against the provided K-means baseline. The baseline uses all features except \texttt{OBJECT\_ID} and \texttt{VID}, standardizes them, and runs K-means with $K=20$. This is a reasonable starting point because \texttt{set1.csv} has 20 vessels, so the baseline is given the correct number of clusters for that dataset. However, even with the correct $K$, the baseline still performed poorly. This showed that knowing the number of clusters is not the same as correctly identifying vessel tracks. K-means minimizes distance to cluster centroids, so it tends to prefer compact, roughly circular clusters. AIS vessel observations are not necessarily shaped this way; one vessel can produce a long path over time, and nearby vessels can pass through similar areas.
 
@@ -72,22 +72,28 @@ To find the correct number of clusters and the correct cluster assignments, we s
 \section*{Method for Unknown Number of Clusters}
 Our final method uses HDBSCAN to solve the unknown-number-of-clusters problem directly. Instead of choosing $K$, HDBSCAN builds a hierarchy of density-connected regions and selects stable clusters from that hierarchy. For our problem, each stable cluster is interpreted as a predicted vessel.
 
-
 \section*{Feature Selection \& Preprocessing}
 
-In this section, we briefly go through how we preprocessed the data, considering details such as dropped columns, extracted features, and our standardization method.
+In this section, we briefly go through how we preprocessed the data, considering details such as dropped columns, extracted features, feature weighting, and our standardization method.
 
-\subsubsection*{VID} To run k-means against the test data sets \texttt{set1} and \texttt{set2}, we drop the VID column so that it does not effect the clustering. After clustering we
-use the groudtruth cluster assignments dictated by VID to determine the accuracy of the model. 
+\subsubsection*{VID} To run clustering against the test data sets \texttt{set1} and \texttt{set2}, we drop the VID column so that it does not affect the clustering. After clustering we use the ground truth cluster assignments dictated by VID to determine the accuracy of the model. For \texttt{set3noVID.csv}, the VID values are unavailable for evaluation, so VID cannot be used as an input feature.
 
-\subsubsection*{OBJECT\_ID} We also drop the OBJECT\_ID column, since it provides no relevant information
-to help with clustering vessel reports.
+\subsubsection*{OBJECT\_ID} We also drop the OBJECT\_ID column, since it provides no relevant information to help with clustering vessel reports. It is only a unique identifier for each observation and does not describe vessel behavior.
 
-\subsubsection*{SEQUENCE\_DTTM} For this feature, we simply convert it into seconds. This is a form understandable to our model as
-opposed to the UTC format.
+\subsubsection*{SEQUENCE\_DTTM} For this feature, we convert it into seconds. This is a form understandable to our model as opposed to the UTC \texttt{hh:mm:ss} format. We keep this feature because it represents when each vessel report occurred, which is important since vessels form paths over time.
 
-\subsubsection*{Standardization} To ensure feature scale did not affect the outcome of the k-means clustering, we use the \texttt{StandardScaler} from scikit-learn to transform the data such that
-each feature has its mean set to 0 and variance to 1. This helps curb the effect of some features dominating the distortion calculation and also maintains the distribution shape.
+\subsubsection*{LAT and LON} We keep \texttt{LAT} and \texttt{LON} because they represent where each vessel report occurred. These are the most important spatial features in the final model, since a vessel should form a continuous path through space over time.
+
+\subsubsection*{SPEED\_OVER\_GROUND and COURSE\_OVER\_GROUND} We also tried including \texttt{SPEED\_OVER\_GROUND} and \texttt{COURSE\_OVER\_GROUND}. For course, we converted the angle into sine and cosine components so that directions near $0^\circ$ and $360^\circ$ would be treated as close. However, validation showed that adding speed and course reduced performance compared with using time and position only. This may be because speed and course can be noisy or can vary along a single vessel's route, causing one vessel to be split into multiple clusters.
+
+\subsubsection*{Standardization} To ensure feature scale did not affect the outcome of the clustering, we use the \texttt{StandardScaler} from scikit-learn to transform the data such that each feature has its mean set to 0 and variance to 1.
+
+\subsubsection*{Feature Weighting} After standardization, our final predictor applies feature weights to \texttt{SEQUENCE\_DTTM}, \texttt{LAT}, and \texttt{LON}:
+\[
+[0.5,\ 3.0,\ 3.0]
+\]
+for time, latitude, and longitude respectively. This gives spatial position more influence than time while still preserving temporal ordering. We chose this weighting because validation showed that position was more important for separating vessel track. Even though time was still useful, it should not dominate calculations.
+
 
 \section*{Validation Results}
 \section*{Insights and Failed Attempts}
