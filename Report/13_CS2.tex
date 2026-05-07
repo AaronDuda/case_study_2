@@ -42,7 +42,8 @@ clustering found at \url{https://scikit-learn.org/stable/modules/clustering.html
 
 We began by comparing against the provided K-means baseline. The baseline uses all features except \texttt{OBJECT\_ID} and \texttt{VID}, standardizes them, and runs K-means with $K=20$. This is a reasonable starting point because \texttt{set1.csv} has 20 vessels, so the baseline is given the correct number of clusters for that dataset. However, even with the correct $K$, the baseline still performed poorly. This showed that knowing the number of clusters is not the same as correctly identifying vessel tracks. K-means minimizes distance to cluster centroids, so it tends to prefer compact, roughly circular clusters. AIS vessel observations are not necessarily shaped this way; one vessel can produce a long path over time, and nearby vessels can pass through similar areas.
 
-We also tested the idea of using K-means together with silhouette score to estimate $K$. \textbf{[More info about K means + silhouette results]}
+We also tested the idea of using K-means together with silhouette score to estimate $K$. To estimate K, we first found the K value for which there was an elbow using the \texttt{kneed} library. After that, we pick the K value within $\pm 2$ of the elbow which has the best average silhouette value.
+This method does successfully find the correct value for K, but this ultimately did not lead to a significant boost in performance, as we were still using the poorly performing K-means model from \texttt{scikit-learn}.
 
 Other algorithms from the scikit-learn clustering page were considered conceptually. We did not choose Affinity Propagation or Mean Shift because they are less scalable with respect to the number of samples. We did not choose plain DBSCAN because it depends heavily on selecting one global \texttt{eps} value, which is difficult when vessel-report density varies. OPTICS, BIRCH, and Gaussian mixture models may also be reasonable comparisons, but we did not include them in our final implementation. We focused our validation on the provided K-means baseline and HDBSCAN parameter searches because HDBSCAN directly addresses the unknown-number-of-clusters requirement while still fitting the density-based structure of vessel tracks.
 
@@ -71,6 +72,9 @@ To find the correct number of clusters and the correct cluster assignments, we s
 
 \section*{Method for Unknown Number of Clusters}
 Our final method uses HDBSCAN to solve the unknown-number-of-clusters problem directly. Instead of choosing $K$, HDBSCAN builds a hierarchy of density-connected regions and selects stable clusters from that hierarchy. For our problem, each stable cluster is interpreted as a predicted vessel.
+
+To tune our hyperparameters, we used a method similar to grid search, where we tried several combinations of different values of hyperparameters as well as different configurations of weighted features. We selected the hyperparameter and feature configuration which maximized the adjusted random index, 
+(a metric which captures how well the model's cluster assignments are similar to the true assignments), for both dataset 1 and 2.
 
 \section*{Feature Selection \& Preprocessing}
 
