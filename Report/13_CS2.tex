@@ -76,6 +76,18 @@ Our final method uses HDBSCAN to solve the unknown-number-of-clusters problem di
 To tune our hyperparameters, we used a method similar to grid search, where we tried several combinations of different values of hyperparameters as well as different configurations of weighted features. We selected the hyperparameter and feature configuration which maximized the adjusted random index, 
 (a metric which captures how well the model's cluster assignments are similar to the true assignments), for both dataset 1 and 2.
 
+The following code shows the grid of feature configurations and HDBSCAN parameters that were tested during validation:
+
+\begin{lstlisting}
+feature_configs = [
+    {'features': ('time', 'position'), 'weights': {'time': 0.25, 'position': 3.0}},
+    # etc. ...
+]
+min_cluster_sizes = [10, 25, 50, 75, 100, 150, 200]
+min_samples_values = [3, 5, 10]
+selection_methods = ['eom', 'leaf']
+\end{lstlisting}
+
 \section*{Feature Selection \& Preprocessing}
 
 In this section, we briefly go through how we preprocessed the data, considering details such as dropped columns, extracted features, feature weighting, and our standardization method.
