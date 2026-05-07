@@ -70,6 +70,7 @@ To find the correct number of clusters and the correct cluster assignments, we s
 \end{enumerate}
 
 \section*{Method for Unknown Number of Clusters}
+Our final method uses HDBSCAN to solve the unknown-number-of-clusters problem directly. Instead of choosing $K$, HDBSCAN builds a hierarchy of density-connected regions and selects stable clusters from that hierarchy. For our problem, each stable cluster is interpreted as a predicted vessel.
 
 
 \section*{Feature Selection \& Preprocessing}
