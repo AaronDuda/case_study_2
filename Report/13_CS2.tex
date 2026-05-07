@@ -38,49 +38,41 @@
 \section*{Chosen Clustering Function and Parameters}
 
 To select the best model suitable for determining the proper clustering of maritime vessel signals, we first considered using some of the algorithms in the scikit-learn module on
-clustering found at \url{https://scikit-learn.org/stable/modules/clustering.html}. We immediately eliminated heirarchical clustering methods since we are not trying to determine a cluster hierarchy.
-Additionally we do not use DBSCAN, HDBSCAN, OPTICS, BIRCH, or gaussian mixtures for a few reasons: (1) we want to cluster all samples and not label some as outliers, and (2)
-these algorithms provide additional capabilities which are not necessary for grouping maritime vessel signals. This left us with K-means, affinity propagation, and mean shift. For the 
-sake of simplicity and the fact that the latter two are not scalable with respect to the number of samples, we decided to use the K-means algorithm.
+clustering found at \url{https://scikit-learn.org/stable/modules/clustering.html}. The goal of this case study is to identify which AIS position reports likely came from the same maritime vessel, even when the vessel IDs are removed. This makes the unknown number of vessels in \texttt{set3noVID.csv} one of the main problems we need to solve.
 
-To find the correct number of clusters and the correct cluster assignments, we set the following parameters, varied as specified.
+We began by comparing against the provided K-means baseline. The baseline uses all features except \texttt{OBJECT\_ID} and \texttt{VID}, standardizes them, and runs K-means with $K=20$. This is a reasonable starting point because \texttt{set1.csv} has 20 vessels, so the baseline is given the correct number of clusters for that dataset. However, even with the correct $K$, the baseline still performed poorly. This showed that knowing the number of clusters is not the same as correctly identifying vessel tracks. K-means minimizes distance to cluster centroids, so it tends to prefer compact, roughly circular clusters. AIS vessel observations are not necessarily shaped this way; one vessel can produce a long path over time, and nearby vessels can pass through similar areas.
+
+We also tested the idea of using K-means together with silhouette score to estimate $K$. \textbf{[More info about K means + silhouette results]}
+
+Other algorithms from the scikit-learn clustering page were considered conceptually. We did not choose Affinity Propagation or Mean Shift because they are less scalable with respect to the number of samples. We did not choose plain DBSCAN because it depends heavily on selecting one global \texttt{eps} value, which is difficult when vessel-report density varies. OPTICS, BIRCH, and Gaussian mixture models may also be reasonable comparisons, but we did not include them in our final implementation. We focused our validation on the provided K-means baseline and HDBSCAN parameter searches because HDBSCAN directly addresses the unknown-number-of-clusters requirement while still fitting the density-based structure of vessel tracks.
+
+
+For these reasons, we chose HDBSCAN as our final clustering algorithm. Unlike K-means, HDBSCAN does not require us to specify \texttt{n\_clusters} in advance. Instead, it estimates clusters from the density structure of the data, which is more suitable for the unknown number of vessels in \texttt{set3noVID.csv}.
+
+To find the correct number of clusters and the correct cluster assignments, we set the following HDBSCAN parameters, varied as specified.
 
 \begin{enumerate}
-    \item $\texttt{n\_clusters}$ (Varied)
+    \item $\texttt{min\_cluster\_size}$ (Varied)
     
-    This parameter represents the number of vessels in the data, and so this number along with the correct assignment of each
-    sample to the correct vessel is the problem we are trying to solve. We do this by comparing the results of different values of this
-    parameter and performing silhouette analysis to chose the optimal parameter.
+    This parameter represents the smallest group of observations that HDBSCAN is allowed to treat as a cluster. Since vessels can have very different numbers of AIS reports, this parameter is important for balancing small vessels against larger vessel tracks. We varied this parameter during validation and selected $\texttt{min\_cluster\_size}=150$ for the final model.
 
-    \item $\texttt{init}$
+    \item $\texttt{min\_samples}$ (Varied)
     
-    This parameter controls how we initialize the centroids. There is either a random approach, or an optimized greedy approach called \texttt{k-means++}.
-    We set this parameter to \texttt{k-means++} since this is the default and performs faster than the traditional randomized approach.
+    This parameter controls how conservative HDBSCAN is when deciding whether a point belongs to a dense region. Larger values make the algorithm stricter and can label more points as noise, while smaller values allow less dense vessel tracks to still form clusters. We varied this parameter and selected $\texttt{min\_samples}=3$ for the final model.
 
-    \item $\texttt{n\_init}$
+    \item $\texttt{cluster\_selection\_method}$
     
-    This parameter controls how many times to initialize and run the k-means algorithm, mitigating the risk of a bad initial assignment. we set this to $10$ since we are
-    optimizing for correct cluster assignment over speed of convergence.
+    This parameter determines how clusters are selected from the density hierarchy. We considered the available options and used \texttt{eom}, which selects stable clusters from the hierarchy and gave strong validation performance.
 
-    \item $\texttt{max\_iter}$
+    \item Feature set and feature weights (Varied)
     
-    This parameter controls how many iterations of k-means are allowed until the algorithm forcibly halts. We leave this at the default value $300$.
-
-    \item $\texttt{tol}$
-    
-    This parameter is essentially the convergence threshold, and we leave this at the default value of $0.0001$
-
-    \item $\texttt{algorithm}$
-    
-    This parameter determines which variant of k-means to run, either the classical formulation called \texttt{lloyd} or a version more efficient in
-    some cases called \texttt{elkan}. We decided to go with the default \texttt{lloyd} algorithm since we are
-    willing to sacrifice some speed for greater accuracy and simplicity.
+    In addition to the HDBSCAN parameters, we varied which features were used and how strongly they were weighted after standardization. The best balanced final configuration used \texttt{SEQUENCE\_DTTM}, \texttt{LAT}, and \texttt{LON}, with weights $[0.5, 3.0, 3.0]$ for time, latitude, and longitude respectively.
 \end{enumerate}
 
-\section*{Solution Method}
+\section*{Method for Unknown Number of Clusters}
 
 
-\section*{Feature Preprocessing}
+\section*{Feature Selection \& Preprocessing}
 
 In this section, we briefly go through how we preprocessed the data, considering details such as dropped columns, extracted features, and our standardization method.
 
@@ -96,8 +88,8 @@ opposed to the UTC format.
 \subsubsection*{Standardization} To ensure feature scale did not affect the outcome of the k-means clustering, we use the \texttt{StandardScaler} from scikit-learn to transform the data such that
 each feature has its mean set to 0 and variance to 1. This helps curb the effect of some features dominating the distortion calculation and also maintains the distribution shape.
 
-
-\section*{Insights and Clarity}
+\section*{Validation Results}
+\section*{Insights and Failed Attempts}
 
 
 
