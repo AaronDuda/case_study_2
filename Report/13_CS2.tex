@@ -115,8 +115,11 @@ Final tuned HDBSCAN & 0.6975 & 0.9817 \\
 \end{center}
 
 The final tuned HDBSCAN model substantially improves over the baseline on both labeled datasets. The largest improvement is on \texttt{set2.csv}, but \texttt{set1.csv} also improves by a large margin. This suggests that the final feature selection and parameter tuning better match the structure of the AIS vessel-tracking problem than the original K-means baseline.
+
 \section*{Insights and Failed Attempts}
 
+Perhaps the most surprising insight from this study was the fact that more data does not necessarily make your model better. In the case of the maritime vessels data, it was more beneficial to remove columns concerned with the vessel's speed and only retain information about time and position. We also found it interesting that K-means was mostly ineffective at 
+solving this problem. Our initial thought was that if we could obtain the correct value for K using the elbow method and silhouette values, we could simply tune the other hyperparameters to build a successful model. But nothing we did could 
 
 
 
