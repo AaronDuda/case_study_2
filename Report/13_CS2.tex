@@ -96,6 +96,21 @@ for time, latitude, and longitude respectively. This gives spatial position more
 
 
 \section*{Validation Results}
+We evaluated performance using adjusted Rand index on the labeled datasets \texttt{set1.csv} and \texttt{set2.csv}.
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Method & \texttt{set1.csv} ARI & \texttt{set2.csv} ARI \\
+\midrule
+K-means baseline & 0.2422 & 0.3335 \\
+Initial HDBSCAN, all features equal weight & 0.3755 & 0.8268 \\
+Final tuned HDBSCAN & 0.6975 & 0.9817 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The final tuned HDBSCAN model substantially improves over the baseline on both labeled datasets. The largest improvement is on \texttt{set2.csv}, but \texttt{set1.csv} also improves by a large margin. This suggests that the final feature selection and parameter tuning better match the structure of the AIS vessel-tracking problem than the original K-means baseline.
 \section*{Insights and Failed Attempts}
 
 
