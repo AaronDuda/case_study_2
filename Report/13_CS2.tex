@@ -152,6 +152,9 @@ best_index = lo + np.argmax(sil_scores[lo:hi])
 But nothing we did could improve the model above the baseline. Pursuing this solution was an oversight on our part since the baseline
 shows that even if you know the exact value for K, K-means still cannot cluster the data correctly.
 
+This also makes sense given the structure of the data. Vessels form paths over time, so the most reliable information is where a vessel is and when it was there. A single vessel path can be long or curved, and different vessels can be close together in the same area. The data are also highly imbalanced: in \texttt{set1.csv}, the smallest vessel has only 11 reports while the largest has 1975 reports. This makes methods that assume similarly sized or uniformly dense clusters less appropriate.
+One method we tried that failed was a full parameter-search for HDBSCAN. The search varied feature combinations, feature weights, \texttt{min\_cluster\_size}, \texttt{min\_samples}, and \texttt{cluster\_selection\_method}. This full broad search over many combinations became too slow and was stopped after running for more than 8 minutes, so we used a smaller practical search over the most reasonable combinations. This search showed that tuned time-position features worked best overall.
+
 
 
 \end{document}
